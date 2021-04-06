@@ -3,7 +3,7 @@ require 'tty-prompt'
 
 
 class Recipe
-    attr_accessor :entree, :main, :dessert, :user_rating, :dessert_list, :input, :formated_recipe
+    attr_accessor :entree, :main, :dessert, :user_rating, :recipe_list, :input, :formated_recipe
 
     def initialize()
         @prompt = TTY::Prompt.new
@@ -12,7 +12,7 @@ class Recipe
         @steps = {}
         @user_rating = user_rating
         @dessert = dessert
-        @dessert_list = dessert_list
+        @recipe_list = recipe_list
         @input = input
     end
 
@@ -27,7 +27,7 @@ class Recipe
         if welcome == 'Browse Recipes'
             browse_recipes
         elsif welcome == 'Add Recipe'
-            add_recipe
+            make_recipe
         elsif welcome == 'Edit Recipe'
             edit_recipe
         elsif welcome == 'Delete Recipe'
@@ -37,18 +37,21 @@ class Recipe
 
     def browse_recipes
         puts "\nWelcome to the recipe book!"
-        food_menu("What section would you like to browse?", run_entree, run_main, run_dessert)
+        food_menu("What section would you like to browse?", 
+            :run_entree, :run_main, :run_dessert, :menu)
     end
 
-    def food_menu(greeting, entree='', main='', dessert='')
-         input = @prompt.select(greeting, 
-            %w(Entree Mains Dessert))
+    def food_menu(greeting, entree='', main='', dessert='', back='')
+        input = @prompt.select(greeting, 
+            %w(Entree Mains Dessert Back))
         if input == 'Entree'
-            entree
+            public_send(entree)
         elsif input == 'Mains'
-            main
+            public_send(main)
         elsif input == 'Dessert'
-            dessert
+            public_send(dessert)
+        elsif input == 'Back'
+            public_send(back)
         end
     end
 
@@ -61,20 +64,34 @@ class Recipe
     end
 
     def run_entree
-
+        load_data('entree')
+        pre_format_data
     end
-    def run_main
 
+    def run_main
+        load_data('main')
+        pre_format_data
     end
 
     def run_dessert
-        load_data
-        @dessert_list = @dessert.keys
-        option = @prompt.select("Select a recipe to browse!", @dessert_list)
-        @formated_recipe = @dessert.fetch_values(option).first
-        format_recipe
+        load_data('dessert')
+        pre_format_data
     end
+    
+    def pre_format_data
+        @recipe_list = @dessert.keys
+        @recipe_list.push("Back")
 
+        option = @prompt.select("Select a recipe to browse!", @recipe_list)
+
+        if option == 'Back'
+            browse_recipes
+        else
+            @formated_recipe = @dessert.fetch_values(option).first
+            format_recipe
+        end
+    end
+    
     def format_recipe
         puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
         puts "Rating: #{@formated_recipe.fetch(:rating)}/5"
@@ -88,15 +105,24 @@ class Recipe
 
     end
 
-    def load_data()
+    def load_data(food_group)
+
         temp_hash = {}
-        YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
+
+        if food_group == 'entree'
+            YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
+        elsif food_group == 'main'
+            YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
+        elsif food_group == 'dessert'
+            YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
+        end
+        
         @dessert = temp_hash
     end
 
     def make_recipe()
-        food_menu("What catergory is your recipe?")
-        catergory = @input
+        catergory = @prompt.select("What catergory is your recipe?",
+        %w(Entree Main Dessert)).downcase
 
         puts "What is the recipes name?"
         recipe_name = gets.chomp
@@ -115,7 +141,7 @@ class Recipe
             recipe: @steps}
         }
 
-        File.open("food_recipes/dessert.yml", "a") { |file| file.write(hash_name.to_yaml) }        
+        File.open("food_recipes/#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) }        
     end
 
     def get_steps

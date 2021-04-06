@@ -1,0 +1,7 @@
+---
+hi:
+  :recipe_name: hi
+  :rating: 4
+  :cooking_time: '45'
+  :recipe:
+    'Step 1: ': sdf
