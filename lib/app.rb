@@ -3,13 +3,13 @@ require 'tty-prompt'
 
 
 class Recipe
-    attr_accessor :entree, :main, :dessert, :user_rating, :dessert_list, :input
+    attr_accessor :entree, :main, :dessert, :user_rating, :dessert_list, :input, :formated_recipe
 
     def initialize()
-        @user_rating = user_rating
-        @steps = {}
-        @menu = menu
         @prompt = TTY::Prompt.new
+        @user_rating = user_rating
+        @formated_recipe = formated_recipe
+        @steps = {}
         @user_rating = user_rating
         @dessert = dessert
         @dessert_list = dessert_list
@@ -17,7 +17,7 @@ class Recipe
     end
 
     def menu()
-        welcome = TTY::Prompt.new.select("\nWhat would you like to do?") do |menu|
+        welcome = @prompt.select("\nWhat would you like to do?") do |menu|
             menu.choice "Browse Recipes"
             menu.choice "Add Recipe"
             menu.choice "Edit Recipe" 
@@ -37,32 +37,61 @@ class Recipe
 
     def browse_recipes
         puts "\nWelcome to the recipe book!"
-        food_menu("What section would you like to browse?")
+        food_menu("What section would you like to browse?", run_entree, run_main, run_dessert)
     end
 
-    def food_menu(greeting)
-         input = TTY::Prompt.new.select(greeting, 
+    def food_menu(greeting, entree='', main='', dessert='')
+         input = @prompt.select(greeting, 
             %w(Entree Mains Dessert))
         if input == 'Entree'
-            run_entree
+            entree
         elsif input == 'Mains'
-            run_main
+            main
         elsif input == 'Dessert'
-            run_dessert
+            dessert
         end
     end
 
+    def go_back(wanted_method='')
+        puts "\n"
+        input = @prompt.select('',%w(Back))
+        if input == 'Back'
+            public_send(wanted_method)
+        end
+    end
+
+    def run_entree
+
+    end
+    def run_main
+
+    end
+
     def run_dessert
-        puts "\nSelect a recipe to browse!"
         load_data
         @dessert_list = @dessert.keys
-        p @dessert_list
+        option = @prompt.select("Select a recipe to browse!", @dessert_list)
+        @formated_recipe = @dessert.fetch_values(option).first
+        format_recipe
+    end
+
+    def format_recipe
+        puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
+        puts "Rating: #{@formated_recipe.fetch(:rating)}/5"
+        puts "Cooking time: #{@formated_recipe.fetch(:cooking_time)}"
+        puts "\nSteps:"
+        last_steps = @formated_recipe.fetch(:recipe)
+        last_steps.each_pair{|key, value| puts "#{key} #{value}"}
+        
+        go_back(:run_dessert)
+     
+
     end
 
     def load_data()
-        array = {}
-        YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| array.merge!(doc)}
-        @dessert = array
+        temp_hash = {}
+        YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
+        @dessert = temp_hash
     end
 
     def make_recipe()
@@ -101,15 +130,16 @@ class Recipe
         step = 1
 
         while input
+            puts "Step #{step + 1}:\n"
+            input = gets.chomp
+
             if input == 'done'
                 return
-            else
-                puts "Step #{step + 1}:\n"
-                input = gets.chomp
-                step += 1
-                new_input = {"Step #{step}: " => input}
-                @steps.merge!(new_input)
             end
+
+            step += 1
+            new_input = {"Step #{step}: " => input}
+            @steps.merge!(new_input)
         end
     end
 
@@ -125,4 +155,5 @@ class Recipe
 end
 
 ananda = Recipe.new 
+ananda.menu
 # ananda.make_recipe

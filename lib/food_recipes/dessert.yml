@@ -1,6 +1,6 @@
 ---
 Apple Pie:
-  :recipe_name: Apple pie
+  :recipe_name: Apple Pie
   :rating: 5
   :cooking_time: 1 hour
   :recipe:
@@ -9,7 +9,6 @@ Apple Pie:
     "Step 3: ": Place in oven
     "Step 4: ": Cook for 50 mins
     "Step 5: ": Cool for 10 mins then eat!
-    "Step 6: ": done
 ---
 Chocolate Ice-Cream:
   :recipe_name: Chocolate Ice Cream
@@ -20,7 +19,6 @@ Chocolate Ice-Cream:
     "Step 2: ": Milk the chocolate milk
     "Step 3: ": Keep chocolate milk freezy while stiring it
     "Step 4: ": Stir untill ice-creamy
-    "Step 5: ": done
 ---
 DougNut:
   :recipe_name: DougNut
@@ -31,4 +29,15 @@ DougNut:
     "Step 2: ": Mix with water (eyeball it!)
     "Step 3: ": Make glue
     "Step 4: ": Cry
-    "Step 5: ": done
+---
+Creme brulee:
+  :recipe_name: Creme Brulee
+  :rating: 5
+  :cooking_time: 55 mins
+  :recipe:
+    "Step 1: ": Heat oven to 180
+    "Step 2: ": Mix cream and sugar in a bowl
+    "Step 3: ": Add a few eggs
+    "Step 4: ": Place in oven for 40 mins
+    "Step 5: ": Take out of oven
+    "Step 6: ": Blow torch the top to make it crusty brown
