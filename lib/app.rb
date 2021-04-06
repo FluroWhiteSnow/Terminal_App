@@ -3,20 +3,48 @@ require 'tty-prompt'
 
 
 class Recipe
-    attr_accessor :entree, :main, :dessert, :user_rating, :recipe_list, :input, :formated_recipe
+
+    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating, :recipe_list, :input, :formated_recipe, :go_back
 
     def initialize()
         @prompt = TTY::Prompt.new
+        @go_back
         @user_rating = user_rating
         @formated_recipe = formated_recipe
         @steps = {}
         @user_rating = user_rating
-        @dessert = dessert
+        @all_recipes = all_recipes
         @recipe_list = recipe_list
         @input = input
     end
 
+    def run_all
+        loop do
+            system 'clear'
+            menu
+        end
+    end
+
+    def clean
+        system 'clear'
+    end
+
+    def log_in
+        puts "Username:"
+        username = gets.chomp
+        puts "Password:"
+        password = gets.chomp
+
+        if username == 'admin' && password == 'admin'
+            run_all
+        else 
+            return log_in
+        end
+    end
+
     def menu()
+        clean
+        puts "Welcome to the recipe book!"
         welcome = @prompt.select("\nWhat would you like to do?") do |menu|
             menu.choice "Browse Recipes"
             menu.choice "Add Recipe"
@@ -36,7 +64,7 @@ class Recipe
     end
 
     def browse_recipes
-        puts "\nWelcome to the recipe book!"
+        clean
         food_menu("What section would you like to browse?", 
             :run_entree, :run_main, :run_dessert, :menu)
     end
@@ -65,21 +93,24 @@ class Recipe
 
     def run_entree
         load_data('entree')
+        @go_back = :run_entree
         pre_format_data
     end
 
     def run_main
         load_data('main')
+        @go_back = :run_main
         pre_format_data
     end
 
     def run_dessert
         load_data('dessert')
+        @go_back = :run_dessert
         pre_format_data
     end
     
     def pre_format_data
-        @recipe_list = @dessert.keys
+        @recipe_list = @all_recipes.keys
         @recipe_list.push("Back")
 
         option = @prompt.select("Select a recipe to browse!", @recipe_list)
@@ -87,12 +118,13 @@ class Recipe
         if option == 'Back'
             browse_recipes
         else
-            @formated_recipe = @dessert.fetch_values(option).first
+            @formated_recipe = @all_recipes.fetch_values(option).first
             format_recipe
         end
     end
     
     def format_recipe
+        clean
         puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
         puts "Rating: #{@formated_recipe.fetch(:rating)}/5"
         puts "Cooking time: #{@formated_recipe.fetch(:cooking_time)}"
@@ -100,9 +132,7 @@ class Recipe
         last_steps = @formated_recipe.fetch(:recipe)
         last_steps.each_pair{|key, value| puts "#{key} #{value}"}
         
-        go_back(:run_dessert)
-     
-
+        go_back(@go_back)
     end
 
     def load_data(food_group)
@@ -117,10 +147,11 @@ class Recipe
             YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
         end
         
-        @dessert = temp_hash
+        @all_recipes = temp_hash
     end
 
     def make_recipe()
+        clean
         catergory = @prompt.select("What catergory is your recipe?",
         %w(Entree Main Dessert)).downcase
 
@@ -145,6 +176,7 @@ class Recipe
     end
 
     def get_steps
+        clean
         puts "Please enter the steps on how to make this recipe!"
         puts "Type 'done' when you are finished!"
         puts "Step 1:"
@@ -181,5 +213,5 @@ class Recipe
 end
 
 ananda = Recipe.new 
-ananda.menu
+ananda.log_in
 # ananda.make_recipe
