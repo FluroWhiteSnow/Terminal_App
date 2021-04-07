@@ -1,7 +1,7 @@
 ---
 Apple Pie:
   :recipe_name: Apple Pie
-  :rating: 5
+  :rating: 5.0
   :cooking_time: 1 hour
   :recipe:
     "Step 1: ": Pre-heat oven to 180 degrees
@@ -12,7 +12,7 @@ Apple Pie:
 ---
 Chocolate Ice-Cream:
   :recipe_name: Chocolate Ice Cream
-  :rating: 5
+  :rating: 5.0
   :cooking_time: 2 hours
   :recipe:
     "Step 1: ": Fine a brown cow
@@ -22,7 +22,7 @@ Chocolate Ice-Cream:
 ---
 DougNut:
   :recipe_name: DougNut
-  :rating: 5
+  :rating: 5.0
   :cooking_time: "2 hours"
   :recipe:
     "Step 1: ": Make the batter with flour and sugar
@@ -32,7 +32,7 @@ DougNut:
 ---
 Creme brulee:
   :recipe_name: Creme Brulee
-  :rating: 5
+  :rating: 5.0
   :cooking_time: 55 mins
   :recipe:
     "Step 1: ": Heat oven to 180

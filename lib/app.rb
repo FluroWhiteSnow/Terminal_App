@@ -4,11 +4,12 @@ require 'tty-prompt'
 
 class Recipe
 
-    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating, :recipe_list, :input, :formated_recipe, :go_back
+    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating, :recipe_list, :input, :formated_recipe, :go_back, :temp
 
     def initialize()
         @prompt = TTY::Prompt.new
         @go_back
+        @temp = temp
         @user_rating = user_rating
         @formated_recipe = formated_recipe
         @steps = {}
@@ -63,6 +64,26 @@ class Recipe
         end
     end
 
+    def delete_recipe
+        food_menu("Where is the recipe you want to delete?",
+        :del_entree, :del_main, :del_dessert, :menu)
+    end
+
+    def del_entree
+        load_data('entree')
+        pre_format_data('delete')
+    end
+
+    def del_main
+        load_data('main')
+        pre_format_data('delete')
+    end
+
+    def del_dessert
+        load_data('dessert')
+        pre_format_data('delete')
+    end
+
     def browse_recipes
         clean
         food_menu("What section would you like to browse?", 
@@ -94,32 +115,43 @@ class Recipe
     def run_entree
         load_data('entree')
         @go_back = :run_entree
-        pre_format_data
+        pre_format_data('read')
     end
 
     def run_main
         load_data('main')
         @go_back = :run_main
-        pre_format_data
+        pre_format_data('read')
     end
 
     def run_dessert
         load_data('dessert')
         @go_back = :run_dessert
-        pre_format_data
+        pre_format_data('read')
     end
     
-    def pre_format_data
+    def pre_format_data(read)
         @recipe_list = @all_recipes.keys
         @recipe_list.push("Back")
 
-        option = @prompt.select("Select a recipe to browse!", @recipe_list)
+        if read == 'read' 
+            option = @prompt.select("Select a recipe to browse!", @recipe_list)
+            if option == 'Back'
+                browse_recipes
+            else
+                @formated_recipe = @all_recipes.fetch_values(option).first
+                format_recipe
+            end
+        end
+        
+        if read == 'delete'
+            option = @prompt.select("Select a recipe to delete!", @recipe_list)
 
-        if option == 'Back'
-            browse_recipes
-        else
-            @formated_recipe = @all_recipes.fetch_values(option).first
-            format_recipe
+            if option == 'Back'
+                browse_recipes
+            else
+                option
+            end
         end
     end
     
@@ -203,7 +235,7 @@ class Recipe
 
     def rating
         puts"How would you rate this recipe out of 5?"
-        @user_rating = gets.chomp.to_i
+        @user_rating = gets.chomp.to_f
         if user_rating < 0 || user_rating > 5
             puts "Invalid score"
             puts "Enter a score between 0 and 5"
