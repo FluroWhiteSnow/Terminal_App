@@ -11,7 +11,7 @@ Apple Pie:
     "Step 5: ": Cool for 10 mins then eat!
 ---
 Chocolate Ice-Cream:
-  :recipe_name: Chocolate Ice Cream
+  :recipe_name: Chocolate Ice-Cream
   :rating: 5.0
   :cooking_time: 2 hours
   :recipe:
@@ -30,7 +30,7 @@ DougNut:
     "Step 3: ": Make glue
     "Step 4: ": Cry
 ---
-Creme brulee:
+Creme Brulee:
   :recipe_name: Creme Brulee
   :rating: 5.0
   :cooking_time: 55 mins

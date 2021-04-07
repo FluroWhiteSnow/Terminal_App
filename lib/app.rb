@@ -4,7 +4,7 @@ require 'tty-prompt'
 
 class Recipe
 
-    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating, :recipe_list, :input, :formated_recipe, :go_back, :temp
+    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating, :recipe_list, :input, :formated_recipe, :go_back, :temp, :file_read_variable
 
     def initialize()
         @prompt = TTY::Prompt.new
@@ -17,6 +17,7 @@ class Recipe
         @all_recipes = all_recipes
         @recipe_list = recipe_list
         @input = input
+        @file_read_variable = file_read_variable
     end
 
     def run_all
@@ -64,6 +65,19 @@ class Recipe
         end
     end
 
+    def edit_recipe
+        food_menu("Where is the recipe you want to edit?",
+        :edit_entree, :edit_main, :edit_dessert, :menu)
+    end
+
+    def edit_dessert
+        load_data('entree')
+        @file_read_variable = 'entree'
+
+        
+
+    end
+
     def delete_recipe
         food_menu("Where is the recipe you want to delete?",
         :del_entree, :del_main, :del_dessert, :menu)
@@ -71,16 +85,19 @@ class Recipe
 
     def del_entree
         load_data('entree')
+        @file_read_variable = 'entree'
         pre_format_data('delete')
     end
 
     def del_main
         load_data('main')
+        @file_read_variable = 'main'
         pre_format_data('delete')
     end
 
     def del_dessert
         load_data('dessert')
+        @file_read_variable = 'dessert'
         pre_format_data('delete')
     end
 
@@ -111,7 +128,10 @@ class Recipe
             public_send(wanted_method)
         end
     end
-
+                puts @all_recipes
+                puts @recipe_list
+                puts @formated_recipe
+                gets
     def run_entree
         load_data('entree')
         @go_back = :run_entree
@@ -150,7 +170,10 @@ class Recipe
             if option == 'Back'
                 browse_recipes
             else
-                option
+                @all_recipes.delete(option)
+                @recipe_list = @all_recipes.keys
+
+                File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
             end
         end
     end
