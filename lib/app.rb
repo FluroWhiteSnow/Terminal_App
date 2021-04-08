@@ -182,12 +182,13 @@ class Recipe
                 format_recipe('edit')
                 
             end
-
         end
     end
     
     def format_recipe(temp='')
         clean
+        yaml_write = File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+
         if temp == ''
             puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
             puts "Rating: #{@formated_recipe.fetch(:rating)}/5"
@@ -207,7 +208,7 @@ class Recipe
 
         if input == 1
             edit_name = @formated_recipe.fetch(:recipe_name)
-            finish_edit = @prompt.ask("Recipe Name:", value:edit_name)
+            finish_edit = @prompt.ask("Recipe Name: ", value:edit_name)
             @formated_recipe[:recipe_name] = finish_edit
             @recipe_list = @all_recipes.keys
             
@@ -216,8 +217,15 @@ class Recipe
             end
 
             File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+
+        elsif input == 3
+            edit_time = @formated_recipe.fetch(:cooking_time)
+            finish_edit = @prompt.ask("Cooking time: ", value:edit_time)
+
+            @formated_recipe[:cooking_time] = finish_edit
+            @recipe_list = @all_recipes.keys
             
-            gets
+            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
 
         elsif input == 4
             last_steps = @formated_recipe.fetch(:recipe)
