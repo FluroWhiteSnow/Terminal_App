@@ -205,7 +205,21 @@ class Recipe
             end
         end
 
-        if input == 4
+        if input == 1
+            edit_name = @formated_recipe.fetch(:recipe_name)
+            finish_edit = @prompt.ask("Recipe Name:", value:edit_name)
+            @formated_recipe[:recipe_name] = finish_edit
+            @recipe_list = @all_recipes.keys
+            
+            if @all_recipes.has_key?(edit_name)
+                @all_recipes[finish_edit] = @all_recipes.delete edit_name
+            end
+
+            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            
+            gets
+
+        elsif input == 4
             last_steps = @formated_recipe.fetch(:recipe)
 
             input = @prompt.select("Which step would you like to edit?\n") do |menu|
@@ -213,9 +227,12 @@ class Recipe
                     menu.choice "#{key} #{value}", key
                 end
             end
-            
+    
             edit_value = @prompt.ask(input, value:last_steps[input])
-            @formated_recipe[input] = edit_value
+            @formated_recipe[:recipe][input] = edit_value
+            @recipe_list = @all_recipes.keys
+
+            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
         end
 
         go_back(@go_back)
