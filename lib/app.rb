@@ -71,11 +71,9 @@ class Recipe
     end
 
     def edit_dessert
-        load_data('entree')
-        @file_read_variable = 'entree'
-
-        
-
+        load_data('dessert')
+        @file_read_variable = 'dessert'
+        pre_format_data('edit')
     end
 
     def delete_recipe
@@ -125,13 +123,10 @@ class Recipe
         puts "\n"
         input = @prompt.select('',%w(Back))
         if input == 'Back'
-            public_send(wanted_method)
+            menu
         end
     end
-                puts @all_recipes
-                puts @recipe_list
-                puts @formated_recipe
-                gets
+
     def run_entree
         load_data('entree')
         @go_back = :run_entree
@@ -176,16 +171,51 @@ class Recipe
                 File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
             end
         end
+
+        if read == 'edit'
+            option = @prompt.select("Select a recipe to edit!", @recipe_list)
+
+            if option == 'Back'
+                browse_recipes
+            else
+                @formated_recipe = all_recipes.fetch_values(option).first
+                format_recipe('edit')
+                
+            end
+
+        end
     end
     
-    def format_recipe
+    def format_recipe(temp='')
         clean
-        puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
-        puts "Rating: #{@formated_recipe.fetch(:rating)}/5"
-        puts "Cooking time: #{@formated_recipe.fetch(:cooking_time)}"
-        puts "\nSteps:"
-        last_steps = @formated_recipe.fetch(:recipe)
-        last_steps.each_pair{|key, value| puts "#{key} #{value}"}
+        if temp == ''
+            puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
+            puts "Rating: #{@formated_recipe.fetch(:rating)}/5"
+            puts "Cooking time: #{@formated_recipe.fetch(:cooking_time)}"
+            puts "\nSteps:"
+            last_steps = @formated_recipe.fetch(:recipe)
+            last_steps.each_pair{|key, value| puts "#{key} #{value}"}
+
+        elsif temp == 'edit'
+            input = @prompt.select("What would you like to edit?\n") do |menu|
+                menu.choice name: "Recipe Name: #{@formated_recipe.fetch(:recipe_name)}",  value: 1
+                menu.choice name: "Rating: #{@formated_recipe.fetch(:rating)}/5", value: 2
+                menu.choice name: "Cooking time: #{@formated_recipe.fetch(:cooking_time)}",  value: 3
+                menu.choice name: "Enter to expand steps:",  value: 4
+            end
+        end
+
+        if input == 4
+            last_steps = @formated_recipe.fetch(:recipe)
+            
+            input = @prompt.select("Which step would you like to edit?\n") do |menu|
+                counter = 1
+                last_steps.each_pair do |key, value| 
+                    menu.choice "#{key} #{value}", counter 
+                    counter += 1
+                end
+            end
+        end
         
         go_back(@go_back)
     end
