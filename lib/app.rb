@@ -207,16 +207,17 @@ class Recipe
 
         if input == 4
             last_steps = @formated_recipe.fetch(:recipe)
-            
+
             input = @prompt.select("Which step would you like to edit?\n") do |menu|
-                counter = 1
                 last_steps.each_pair do |key, value| 
-                    menu.choice "#{key} #{value}", counter 
-                    counter += 1
+                    menu.choice "#{key} #{value}", key
                 end
             end
+            
+            edit_value = @prompt.ask(input, value:last_steps[input])
+            @formated_recipe[input] = edit_value
         end
-        
+
         go_back(@go_back)
     end
 
@@ -242,7 +243,7 @@ class Recipe
 
         puts "What is the recipes name?"
         recipe_name = gets.chomp
-        hash_name = recipe_name
+        hash_name = recipe_namelast_steps
 
         rating
         puts"How long does this take to cook?"
