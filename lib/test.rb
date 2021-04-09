@@ -11,3 +11,5 @@ YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(do
         end
         
     end
+
+    , "Apple Pie", "DougNut", "Creme Brulee", "Chocolate Ice-Cream", "Steak", "Salad", "Savoy", "Spring Roll", "Dip", "Pineapple"
