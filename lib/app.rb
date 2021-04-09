@@ -115,6 +115,7 @@ class Recipe
         if @all_accounts.has_key?(@username)
             password = @all_accounts.fetch(@username)
             if password== @password
+                update_recipes
                 run_all
             else
                 puts "You may have entered the wrong password!"
@@ -463,6 +464,21 @@ class Recipe
     def stage_recipe
         load_stage_data
         pre_format_data('stage')
+    end
+
+    def update_recipes
+        updated_recipe_list = {}
+
+        YAML.load_stream(File.read("food_recipes/entree.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| updated_recipe_list.merge!(doc)}
+        
+        updated_recipe_list.clear
+        YAML.load_stream(File.read("food_recipes/main.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| updated_recipe_list.merge!(doc)}
+        
+        updated_recipe_list.clear
+        YAML.load_stream(File.read("food_recipes/dessert.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| updated_recipe_list.merge!(doc)}
     end
 
     def load_stage_data(edit='')

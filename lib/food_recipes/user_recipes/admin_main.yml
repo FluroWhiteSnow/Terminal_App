@@ -1,0 +1,56 @@
+---
+Steak:
+  :recipe_name: Steak
+  :rating: 5.0
+  :cooking_time: 2 hours
+  :recipe:
+    'Step 1: ': Find a big ol cow
+    'Step 2: ': Kill cow
+    'Step 3: ': Harvest the meat
+    'Step 4: ': Cook any part you want
+    'Step 5: ': Bam steak!
+Salad:
+  :recipe_name: Salas
+  :rating: 5.0
+  :cooking_time: 30 mins
+  :recipe:
+    'Step 1: ': Mow lawn
+    'Step 2: ': Harvest clipping
+    'Step 3: ': Serve in bowl
+    'Step 4: ': Mow lawn in rain for a dressing texture
+Savoy:
+  :recipe_name: Savoy
+  :rating: 2.0
+  :cooking_time: Instant
+  :recipe:
+    'Step 1: ': get Savoys
+    'Step 2: ': Eat Savoys
+    'Step 3: ': Drink water to fix dry mouth
+---
+Steak:
+  :recipe_name: Steak
+  :rating: 5.0
+  :cooking_time: 2 hours
+  :recipe:
+    'Step 1: ': Find a big ol cow
+    'Step 2: ': Kill cow
+    'Step 3: ': Harvest the meat
+    'Step 4: ': Cook any part you want
+    'Step 5: ': Bam steak!
+Salad:
+  :recipe_name: Salas
+  :rating: 5.0
+  :cooking_time: 30 mins
+  :recipe:
+    'Step 1: ': Mow lawn
+    'Step 2: ': Harvest clipping
+    'Step 3: ': Serve in bowl
+    'Step 4: ': Mow lawn in rain for a dressing texture
+Savoy:
+  :recipe_name: Savoy
+  :rating: 2.0
+  :cooking_time: Instant
+  :recipe:
+    'Step 1: ': get Savoys
+    'Step 2: ': Eat Savoys
+    'Step 3: ': Drink water to fix dry mouth
