@@ -63,6 +63,7 @@ class Recipe
         get_password
         write_new_user
         write_user_recipes
+
         run_all
     end
 
@@ -90,6 +91,19 @@ class Recipe
         File.open("food_recipes/user_recipes/#{@username}_entree.yml", "w")
         File.open("food_recipes/user_recipes/#{@username}_main.yml", "w")
         File.open("food_recipes/user_recipes/#{@username}_dessert.yml", "w")
+        populate_user_recipes
+    end
+
+    def populate_user_recipes
+        temp_hash = {}
+        YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
+        File.open("food_recipes/user_recipes/#{@username}_entree.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
+        temp_hash.clear
+        YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
+        File.open("food_recipes/user_recipes/#{@username}_main.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
+        temp_hash.clear
+        YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
+        File.open("food_recipes/user_recipes/#{@username}_dessert.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
     end
 
     def log_in
@@ -102,8 +116,6 @@ class Recipe
             if password== @password
                 run_all
             else
-                p @username
-                p @all_accounts
                 puts "You may have entered the wrong password!"
                 puts "Please log in again!"
                 gets
@@ -324,10 +336,9 @@ class Recipe
 
             load_stage_data('edit')
             
-            if @user_edit_recipes.has_key?(edit_name)
+            unless @username == 'admin'
                 File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
-
-            else
+            else 
                 File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
             end
 

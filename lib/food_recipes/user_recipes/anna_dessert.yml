@@ -38,10 +38,10 @@ Chocolate Ice-Cream:
     'Step 2: ': Milk the chocolate
     'Step 3: ': Keep chocolate milk freezy while stiring
     'Step 4: ': Stir untill ice-creamy
-Pokemon:
-  :recipe_name: Pokemon
+apples:
+  :recipe_name: apples
   :rating: 5.0
-  :cooking_time: '34'
+  :cooking_time: 45min
   :recipe:
-    'Step 1: ': Test
-    'Step 2: ': test step 2
+    'Step 1: ': asdasdf
+    'Step 2: ': asdfasdf
