@@ -287,8 +287,11 @@ class Recipe
             else
                 @all_recipes.delete(option)
                 @recipe_list = @all_recipes.keys
-
-                File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                unless @username == 'admin'
+                    File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                else
+                    File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                end
             end
         end
 

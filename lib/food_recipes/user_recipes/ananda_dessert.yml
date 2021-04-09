@@ -38,11 +38,3 @@ Chocolate Ice-Cream:
     'Step 2: ': Milk the chocolate
     'Step 3: ': Keep chocolate milk freezy while stiring
     'Step 4: ': Stir untill ice-creamy
-test:
-  :recipe_name: test
-  :rating: 5.0
-  :cooking_time: '3'
-  :recipe:
-    'Step 1: ': sdf
-    'Step 2: ': asdf
-    'Step 3: ': asdf
