@@ -6,7 +6,7 @@ class Recipe
 
     attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating,
     :recipe_list, :input, :formated_recipe, :go_back, :temp, :file_read_variable, :users,
-    :username, :password
+    :username, :password, :submit_recipe, :user_recipes, :prompt
 
     def initialize()
         @prompt = TTY::Prompt.new
@@ -23,7 +23,8 @@ class Recipe
         @input = input
         @file_read_variable = file_read_variable
         @user = {}
-        
+        @submit_recipe = submit_recipe
+        @user_recipes = user_recipes
     end
 
     def run_all
@@ -125,11 +126,13 @@ class Recipe
     def menu()
         clean
         puts "Welcome to the recipe book!"
+        
         welcome = @prompt.select("\nWhat would you like to do?") do |menu|
             menu.choice "Browse Recipes"
             menu.choice "Add Recipe"
             menu.choice "Edit Recipe" 
             menu.choice "Delete Recipe"
+            menu.choice "Submit Recipe to global book"
         end
 
         if welcome == 'Browse Recipes'
@@ -140,7 +143,10 @@ class Recipe
             edit_recipe
         elsif welcome == 'Delete Recipe'
             delete_recipe
+        elsif welcome == "Submit Recipe to global book"
+            stage_recipe
         end
+        
     end
 
     def edit_recipe
@@ -248,12 +254,23 @@ class Recipe
                 format_recipe
             end
         end
+
+        if read == 'stage'
+            option = @prompt.select("Select a recipe to stage!", @recipe_list)
+            if option == 'Back'
+                menu
+            else
+                recipe_values = @all_recipes.fetch(option)
+                staged_recipe = {option => recipe_values}
+                File.open("food_recipes/staged_recipes/staging.yml", "a") { |file| file.write(staged_recipe.to_yaml) } 
+            end
+        end
         
         if read == 'delete'
             option = @prompt.select("Select a recipe to delete!", @recipe_list)
 
             if option == 'Back'
-                browse_recipes
+                menu
             else
                 @all_recipes.delete(option)
                 @recipe_list = @all_recipes.keys
@@ -266,7 +283,7 @@ class Recipe
             option = @prompt.select("Select a recipe to edit!", @recipe_list)
 
             if option == 'Back'
-                browse_recipes
+                menu
             else
                 @formated_recipe = all_recipes.fetch_values(option).first
                 format_recipe('edit')
@@ -335,7 +352,7 @@ class Recipe
         go_back(@go_back)
     end
 
-    def load_data(food_group)
+    def load_data(food_group='')
         
         temp_hash = {}
         
@@ -345,7 +362,7 @@ class Recipe
             if @username != 'admin'
                 YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
             end
-            
+
         elsif food_group == 'main'
             YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
     
@@ -360,6 +377,21 @@ class Recipe
                 YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
             end
         end
+        
+        @all_recipes = temp_hash
+    end
+
+    def stage_recipe
+        load_stage_data
+        pre_format_data('stage')
+    end
+
+    def load_stage_data
+        temp_hash = {}
+
+        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
         
         @all_recipes = temp_hash
     end
