@@ -14,11 +14,3 @@ Pokemon:
   :recipe:
     "Step 1: ": Test
     "Step 2: ": test step 2
----
-apple crumble:
-  :recipe_name: apple crumble
-  :rating: 5.0
-  :cooking_time: 45min
-  :recipe:
-    'Step 1: ': asdasdf
-    'Step 2: ': asdfasdf

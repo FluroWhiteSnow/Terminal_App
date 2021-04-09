@@ -333,16 +333,13 @@ class Recipe
             if @all_recipes.has_key?(edit_name)
                 @all_recipes[finish_edit] = @all_recipes.delete edit_name
             end
-
-            load_stage_data('edit')
             
             unless @username == 'admin'
+                load_stage_data('edit')
                 File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
             else 
                 File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
             end
-
-            
 
         elsif input == 3
             edit_time = @formated_recipe.fetch(:cooking_time)
@@ -351,7 +348,12 @@ class Recipe
             @formated_recipe[:cooking_time] = finish_edit
             @recipe_list = @all_recipes.keys
             
-            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            unless @username == 'admin'
+                load_stage_data('edit')
+                File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            else 
+                File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            end
 
         elsif input == 4
             last_steps = @formated_recipe.fetch(:recipe)
@@ -366,7 +368,13 @@ class Recipe
             @formated_recipe[:recipe][input] = edit_value
             @recipe_list = @all_recipes.keys
 
-            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            unless @username == 'admin'
+                load_stage_data('edit')
+                File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            else 
+                File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            end
+            
         end
 
         go_back(@go_back)
@@ -377,10 +385,10 @@ class Recipe
         temp_hash = {}
         
         if food_group == 'entree'
-            YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
-            
             if @username != 'admin'
                 YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            else
+                YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
             end
 
         elsif food_group == 'main'
