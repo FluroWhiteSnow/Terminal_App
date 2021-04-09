@@ -6,7 +6,7 @@ class Recipe
 
     attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating,
     :recipe_list, :input, :formated_recipe, :go_back, :temp, :file_read_variable, :users,
-    :username, :password, :submit_recipe, :user_recipes, :prompt
+    :username, :password, :submit_recipe, :user_recipes, :user_edit_recipes, :prompt
 
     def initialize()
         @prompt = TTY::Prompt.new
@@ -25,6 +25,7 @@ class Recipe
         @user = {}
         @submit_recipe = submit_recipe
         @user_recipes = user_recipes
+        @user_edit_recipes = user_edit_recipes
     end
 
     def run_all
@@ -293,7 +294,6 @@ class Recipe
     
     def format_recipe(temp='')
         clean
-        yaml_write = File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
 
         if temp == ''
             puts "\nRecipe Name: #{@formated_recipe.fetch(:recipe_name)}" 
@@ -317,12 +317,21 @@ class Recipe
             finish_edit = @prompt.ask("Recipe Name: ", value:edit_name)
             @formated_recipe[:recipe_name] = finish_edit
             @recipe_list = @all_recipes.keys
-            
+        
             if @all_recipes.has_key?(edit_name)
                 @all_recipes[finish_edit] = @all_recipes.delete edit_name
             end
 
-            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            load_stage_data('edit')
+            
+            if @user_edit_recipes.has_key?(edit_name)
+                File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+
+            else
+                File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            end
+
+            
 
         elsif input == 3
             edit_time = @formated_recipe.fetch(:cooking_time)
@@ -386,14 +395,20 @@ class Recipe
         pre_format_data('stage')
     end
 
-    def load_stage_data
+    def load_stage_data(edit='')
         temp_hash = {}
 
-        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
-        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
-        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
-        
-        @all_recipes = temp_hash
+        if edit == "edit"
+            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+            @user_edit_recipes = temp_hash
+        else 
+            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+            @all_recipes = temp_hash
+        end
     end
 
     def make_recipe()
