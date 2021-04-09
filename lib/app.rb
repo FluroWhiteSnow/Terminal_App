@@ -4,10 +4,14 @@ require 'tty-prompt'
 
 class Recipe
 
-    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating, :recipe_list, :input, :formated_recipe, :go_back, :temp, :file_read_variable
+    attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating,
+    :recipe_list, :input, :formated_recipe, :go_back, :temp, :file_read_variable, :users,
+    :username, :password
 
     def initialize()
         @prompt = TTY::Prompt.new
+        @username = username
+        @password = password
         @go_back
         @temp = temp
         @user_rating = user_rating
@@ -18,6 +22,8 @@ class Recipe
         @recipe_list = recipe_list
         @input = input
         @file_read_variable = file_read_variable
+        @user = {}
+        
     end
 
     def run_all
@@ -31,16 +37,80 @@ class Recipe
         system 'clear'
     end
 
-    def log_in
-        puts "Username:"
-        username = gets.chomp
-        puts "Password:"
-        password = gets.chomp
-
-        if username == 'admin' && password == 'admin'
-            run_all
+    def log_in_menu
+        menu = @prompt.select("\nWhat would you like to do?") do |menu|
+            menu.choice "Log in"
+            menu.choice "Create account"
+        end
+        if menu == "Log in"
+            log_in
         else 
-            return log_in
+            create_account
+        end
+    end
+
+    def create_account
+        load_accounts
+        get_username
+
+        if @all_accounts.has_key?(@username)
+            puts "That username has already been taken! \nPlease try another!"
+            get_username
+        end
+
+        get_password
+        write_new_user
+        log_in
+    end
+
+    def get_username
+        print "Please enter you username: "
+        @username = gets.chomp.downcase
+    end
+
+    def get_password
+        print "Please enter your password: "
+        @password = gets.chomp.downcase
+    end
+
+    def load_accounts
+        @all_accounts = {}
+        YAML.load_stream(File.read('users/users.yml')){|doc| @all_accounts.merge!(doc)}
+        
+    end
+
+    def write_new_user
+        @user = {@username => @password}
+        File.open("users/users.yml", "a") { |file| file.write(@user.to_yaml) }
+    end
+
+    def log_in
+        load_accounts
+        get_username
+        get_password
+
+        if @all_accounts.has_key?(@username)
+            if @all_accounts.key(@password) == @all_accounts.fetch(@username)
+                run_all
+            else
+                puts "You may have entered the wrong password!"
+                puts "Please log in again!"
+                gets
+                clean
+                log_in
+            end
+        else
+            clean
+            puts "\nUser does not exist"
+            option = @prompt.select("\nWhat would you like to do?") do |menu|
+                menu.choice "Login"
+                menu.choice "Create account"
+            end
+            if option == "Login"
+                log_in
+            else
+                create_account
+            end
         end
     end
 
@@ -68,6 +138,18 @@ class Recipe
     def edit_recipe
         food_menu("Where is the recipe you want to edit?",
         :edit_entree, :edit_main, :edit_dessert, :menu)
+    end
+    
+    def edit_entree
+        load_data('entree')
+        @file_read_variable = 'entree'
+        pre_format_data('edit')
+    end
+
+    def edit_main
+        load_data('main')
+        @file_read_variable = 'main'
+        pre_format_data('edit')
     end
 
     def edit_dessert
@@ -180,7 +262,6 @@ class Recipe
             else
                 @formated_recipe = all_recipes.fetch_values(option).first
                 format_recipe('edit')
-                
             end
         end
     end
@@ -324,5 +405,5 @@ class Recipe
 end
 
 ananda = Recipe.new 
-ananda.log_in
+ananda.log_in_menu
 # ananda.make_recipe
