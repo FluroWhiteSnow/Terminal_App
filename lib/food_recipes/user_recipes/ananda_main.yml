@@ -25,3 +25,12 @@ Savoy:
     "Step 1: ": get Savoys
     "Step 2: ": Eat Savoys
     "Step 3: ": Drink water to fix dry mouth
+---
+lamb chops:
+  :recipe_name: lamb chops
+  :rating: 5.0
+  :cooking_time: 30 mins
+  :recipe:
+    "Step 1: ": chop little lamb
+    "Step 2: ": get the leg
+    "Step 3: ": chuck on fire

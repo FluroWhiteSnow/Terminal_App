@@ -288,7 +288,13 @@ class Recipe
             end
 
             if read == 'stage'
-                option = @prompt.select("Select a recipe to stage!", @recipe_list)
+                load_data('all')
+                @all_recipes.delete_if {|name| @default_recipes.include?(name)}
+                
+                options =  @all_recipes.keys
+                options.push('Back')
+                option = prompt.select("Select a recipe to edit!", options)
+                
                 if option == 'Back'
                     menu
                 else
@@ -317,6 +323,7 @@ class Recipe
             if read == 'edit'
                 unless @username == 'admin'
                     load_data(@file_read_variable)
+
                     @all_recipes.delete_if {|name| @default_recipes.include?(name)}
                     options =  @all_recipes.keys
                     options.push('Back')
@@ -329,7 +336,7 @@ class Recipe
                         @formated_recipe = all_recipes.fetch_values(option).first
                         format_recipe('edit')
                     end
-                    
+
                 else
                     option = @prompt.select("Select a recipe to edit!", @recipe_list)
 
@@ -475,22 +482,20 @@ class Recipe
         temp_hash = {}
         
         if food_group == 'entree'
+            YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
             if @username != 'admin'
-                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
-            else
-                YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
+                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}    
             end
 
         elsif food_group == 'main'
             YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
-    
             if @username != 'admin'
                 YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
             end
 
         elsif food_group == 'dessert'
             YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
-            
+
             if @username != 'admin'
                 YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
             end
@@ -532,7 +537,7 @@ class Recipe
             YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
             YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
             @user_edit_recipes = temp_hash
-        else 
+        else
             YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
             YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
             YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}

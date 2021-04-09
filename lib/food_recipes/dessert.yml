@@ -38,3 +38,13 @@ Chocolate Ice-Cream:
     "Step 2: ": Milk the chocolate
     "Step 3: ": Keep chocolate milk cold while stiring
     "Step 4: ": Stir untill ice-creamy
+---
+Strawberry Strudle:
+  :recipe_name: Strawberry Strudle
+  :rating: 4.0
+  :cooking_time: 2.5 hours
+  :recipe:
+    "Step 1: ": Get the pastry
+    "Step 2: ": chop the strawberrys
+    "Step 3: ": add lots of sugar
+    "Step 4: ": Bake it for 1 hour
