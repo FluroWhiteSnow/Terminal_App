@@ -60,6 +60,7 @@ class Recipe
 
         get_password
         write_new_user
+        write_user_recipes
         run_all
     end
 
@@ -81,6 +82,12 @@ class Recipe
     def write_new_user
         @user = {@username => @password}
         File.open("users/users.yml", "a") { |file| file.write(@user.to_yaml) }
+    end
+
+    def write_user_recipes
+        File.open("food_recipes/user_recipes/#{@username}_entree.yml", "w")
+        File.open("food_recipes/user_recipes/#{@username}_main.yml", "w")
+        File.open("food_recipes/user_recipes/#{@username}_dessert.yml", "w")
     end
 
     def log_in
@@ -329,15 +336,29 @@ class Recipe
     end
 
     def load_data(food_group)
-
+        
         temp_hash = {}
-
+        
         if food_group == 'entree'
             YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
+            
+            if @username != 'admin'
+                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            end
+            
         elsif food_group == 'main'
             YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
+    
+            if @username != 'admin'
+                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+            end
+
         elsif food_group == 'dessert'
             YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
+            
+            if @username != 'admin'
+                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+            end
         end
         
         @all_recipes = temp_hash
@@ -350,7 +371,7 @@ class Recipe
 
         puts "What is the recipes name?"
         recipe_name = gets.chomp
-        hash_name = recipe_namelast_steps
+        hash_name = recipe_name 
 
         rating
         puts"How long does this take to cook?"
@@ -365,7 +386,11 @@ class Recipe
             recipe: @steps}
         }
 
-        File.open("food_recipes/#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) }        
+        if @username == 'admin'
+            File.open("food_recipes/#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) } 
+        else
+            File.open("food_recipes/user_recipes/#{@username}_#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) } 
+        end
     end
 
     def get_steps
