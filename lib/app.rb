@@ -60,7 +60,7 @@ class Recipe
 
         get_password
         write_new_user
-        log_in
+        run_all
     end
 
     def get_username
@@ -76,7 +76,6 @@ class Recipe
     def load_accounts
         @all_accounts = {}
         YAML.load_stream(File.read('users/users.yml')){|doc| @all_accounts.merge!(doc)}
-        
     end
 
     def write_new_user
@@ -90,9 +89,12 @@ class Recipe
         get_password
 
         if @all_accounts.has_key?(@username)
-            if @all_accounts.key(@password) == @all_accounts.fetch(@username)
+            password = @all_accounts.fetch(@username)
+            if password== @password
                 run_all
             else
+                p @username
+                p @all_accounts
                 puts "You may have entered the wrong password!"
                 puts "Please log in again!"
                 gets
@@ -100,8 +102,7 @@ class Recipe
                 log_in
             end
         else
-            clean
-            puts "\nUser does not exist"
+            puts "User does not exist"
             option = @prompt.select("\nWhat would you like to do?") do |menu|
                 menu.choice "Login"
                 menu.choice "Create account"
