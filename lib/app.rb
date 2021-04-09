@@ -305,19 +305,34 @@ class Recipe
             end
             
             if read == 'delete'
-                option = @prompt.select("Select a recipe to delete!", @recipe_list)
+                if @username == 'admin'
+                    option = @prompt.select("Select a recipe to delete!", @recipe_list)
 
-                if option == 'Back'
-                    menu
-                else
-                    @all_recipes.delete(option)
-                    @recipe_list = @all_recipes.keys
-                    unless @username == 'admin'
-                        File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                    if option == 'Back'
+                        menu
                     else
+                        @all_recipes.delete(option)
+                        @recipe_list = @all_recipes.keys
+                    end
+                    File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                
+                else
+                    load_data(@file_read_variable)
+                    @all_recipes.delete_if {|name| @default_recipes.include?(name)}
+                
+                    options =  @all_recipes.keys
+                    options.push('Back')
+                    option = prompt.select("Select a recipe to delete!", options)
+
+                    if option == 'Back'
+                        menu
+                    else
+                        @all_recipes.delete(option)
+                        @recipe_list = @all_recipes.keys
                         File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
                     end
                 end
+                
             end
 
             if read == 'edit'
