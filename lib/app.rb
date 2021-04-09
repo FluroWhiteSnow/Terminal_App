@@ -6,13 +6,15 @@ class Recipe
 
     attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating,
     :recipe_list, :input, :formated_recipe, :go_back, :temp, :file_read_variable, :users,
-    :username, :password, :submited_recipe, :user_recipes, :user_edit_recipes, :staged_names, :staged_recipe_option, :prompt
+    :username, :password, :submited_recipe, :user_recipes, :user_edit_recipes, :staged_names, :staged_recipe_option, 
+    :food_catergories, :prompt
 
     def initialize()
         @prompt = TTY::Prompt.new
         @username = username
         @password = password
         @go_back
+        @food_catergories = ['entree','main','dessert']
         @temp = temp
         @user_rating = user_rating
         @formated_recipe = formated_recipe
@@ -89,22 +91,30 @@ class Recipe
     end
 
     def write_user_recipes
-        File.open("food_recipes/user_recipes/#{@username}_entree.yml", "w")
-        File.open("food_recipes/user_recipes/#{@username}_main.yml", "w")
-        File.open("food_recipes/user_recipes/#{@username}_dessert.yml", "w")
+        file_open_user_write('all')
         populate_user_recipes
     end
 
+
+    def file_open_user_write(food_type)
+        if food_type == 'all'
+            food_type = @food_catergories
+        else
+            food_type = [food_type]
+        end
+        food_type.each{|course|File.open("food_recipes/user_recipes/#{@username}_#{course}.yml", "w")}
+    end
+
+
+
     def populate_user_recipes
         temp_hash = {}
-        YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
-        File.open("food_recipes/user_recipes/#{@username}_entree.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
-        temp_hash.clear
-        YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
-        File.open("food_recipes/user_recipes/#{@username}_main.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
-        temp_hash.clear
-        YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
-        File.open("food_recipes/user_recipes/#{@username}_dessert.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
+
+        @food_catergories.each {|food_catergorie|
+            YAML.load_stream(File.read("food_recipes/#{food_catergorie}.yml")){|doc| temp_hash.merge!(doc)}
+            File.open("food_recipes/user_recipes/#{@username}_#{food_catergorie}.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
+            temp_hash.clear
+        }
     end
 
     def log_in
@@ -115,7 +125,9 @@ class Recipe
         if @all_accounts.has_key?(@username)
             password = @all_accounts.fetch(@username)
             if password== @password
-                update_recipes
+                unless @username == 'admin'
+                    update_recipes
+                end
                 run_all
             else
                 puts "You may have entered the wrong password!"

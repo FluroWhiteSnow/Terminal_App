@@ -1,17 +1,13 @@
----
-Another Test:
-  :recipe_name: Another Test
-  :rating: 5.0
-  :cooking_time: "34"
-  :recipe:
-    "Step 1: ": Test
-    "Step 2: ": test step 2
 
-    ---
-Pokemon:
-  :recipe_name: Pokemon
-  :rating: 5.0
-  :cooking_time: "34"
-  :recipe:
-    "Step 1: ": Test
-    "Step 2: ": test step 2
+
+YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
+
+
+ def yaml_load_default(food_type)
+        if food_type == 'all'
+            food_type = ['entree','main','dessert']
+        else
+            food_type = [food_type]
+        end
+        
+    end
