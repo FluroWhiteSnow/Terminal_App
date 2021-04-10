@@ -1,6 +1,8 @@
 require 'yaml'
 require 'tty-prompt'
-gets
+require 'artii'
+require 'colorize'
+
 class Recipe
 
     attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating,
@@ -44,7 +46,10 @@ class Recipe
     end
 
     def log_in_menu
-        menu = @prompt.select("\nWhat would you like to do?") do |menu|
+        a = Artii::Base.new :font => 'slant'
+        puts a.asciify('Recipe book')
+
+        menu = @prompt.select("\nWhat would you like to do?".colorize(:cyan)) do |menu|
             menu.choice "Log in"
             menu.choice "Create account"
         end
@@ -71,13 +76,13 @@ class Recipe
     end
 
     def get_username
-        print "Please enter you username: "
+        print "Please enter you username: ".colorize(:cyan)
         @username = gets.chomp.downcase
     end
 
     def get_password
-        print "Please enter your password: "
-        @password = gets.chomp.downcase
+        print "Please enter your password: \n".colorize(:cyan)
+        @password = @prompt.mask()
     end
 
     def load_accounts
@@ -135,7 +140,7 @@ class Recipe
             end
         else
             puts "User does not exist"
-            option = @prompt.select("\nWhat would you like to do?") do |menu|
+            option = @prompt.select("\nWhat would you like to do?".colorize(:cyan)) do |menu|
                 menu.choice "Login"
                 menu.choice "Create account"
             end
@@ -149,9 +154,11 @@ class Recipe
 
     def menu()
         clean
+        a = Artii::Base.new :font => 'slant'
+        puts a.asciify('Recipe book')
         puts "Welcome to the recipe book!"
         
-        welcome = @prompt.select("\nWhat would you like to do?") do |menu|
+        welcome = @prompt.select("\nWhat would you like to do?".colorize(:cyan)) do |menu|
             menu.choice "Browse Recipes"
             menu.choice "Add Recipe"
             menu.choice "Edit Recipe" 
@@ -179,7 +186,7 @@ class Recipe
     end
 
     def edit_recipe
-        food_menu("Where is the recipe you want to edit?",
+        food_menu("Where is the recipe you want to edit?".colorize(:cyan),
         :edit_entree, :edit_main, :edit_dessert, :menu)
     end
     
@@ -202,7 +209,7 @@ class Recipe
     end
 
     def delete_recipe
-        food_menu("Where is the recipe you want to delete?",
+        food_menu("Where is the recipe you want to delete?".colorize(:cyan),
         :del_entree, :del_main, :del_dessert, :menu)
     end
 
@@ -226,7 +233,9 @@ class Recipe
 
     def browse_recipes
         clean
-        food_menu("What section would you like to browse?", 
+        a = Artii::Base.new :font => 'slant'
+        puts a.asciify('Recipe book')
+        food_menu("What section would you like to browse?".colorize(:cyan), 
             :run_entree, :run_main, :run_dessert, :menu)
     end
 
@@ -277,7 +286,7 @@ class Recipe
             @recipe_list.push("Back")
             
             if read == 'read' 
-                option = @prompt.select("Select a recipe to browse!", @recipe_list)
+                option = @prompt.select("Select a recipe to browse!".colorize(:cyan), @recipe_list)
                 if option == 'Back'
                     browse_recipes
                 else
@@ -292,7 +301,7 @@ class Recipe
                 
                 options =  @all_recipes.keys
                 options.push('Back')
-                option = prompt.select("Select a recipe to edit!", options)
+                option = prompt.select("Select a recipe to edit!".colorize(:cyan), options)
                 
                 if option == 'Back'
                     menu
@@ -305,7 +314,7 @@ class Recipe
             
             if read == 'delete'
                 if @username == 'admin'
-                    option = @prompt.select("Select a recipe to delete!", @recipe_list)
+                    option = @prompt.select("Select a recipe to delete!".colorize(:cyan), @recipe_list)
 
                     if option == 'Back'
                         menu
@@ -321,7 +330,7 @@ class Recipe
                 
                     options =  @all_recipes.keys
                     options.push('Back')
-                    option = prompt.select("Select a recipe to delete!", options)
+                    option = prompt.select("Select a recipe to delete!".colorize(:cyan), options)
 
                     if option == 'Back'
                         menu
@@ -342,7 +351,7 @@ class Recipe
                     options =  @all_recipes.keys
                     options.push('Back')
 
-                    option = prompt.select("Select a recipe to edit!", options)
+                    option = prompt.select("Select a recipe to edit!".colorize(:cyan), options)
                     
                     if option == 'Back'
                         menu
@@ -352,7 +361,7 @@ class Recipe
                     end
 
                 else
-                    option = @prompt.select("Select a recipe to edit!", @recipe_list)
+                    option = @prompt.select("Select a recipe to edit!".colorize(:cyan), @recipe_list)
 
                     if option == 'Back'
                         menu
@@ -364,7 +373,7 @@ class Recipe
             end   
 
         else read == 'admin_review'
-            @staged_recipe_option = @prompt.select("Review recipe:", @staged_names)
+            @staged_recipe_option = @prompt.select("Review recipe:".colorize(:cyan), @staged_names)
             if @staged_recipe_option == 'back'
                 menu
             else
@@ -376,7 +385,7 @@ class Recipe
 
     def format_recipe(temp='')
         clean
-
+        
         def write_to_user_file
             File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
         end
@@ -423,7 +432,7 @@ class Recipe
             end
 
         elsif temp == 'edit'
-            input = @prompt.select("What would you like to edit?\n") do |menu|
+            input = @prompt.select("What would you like to edit?\n".colorize(:cyan)) do |menu|
                 menu.choice name: "Recipe Name: #{@formated_recipe.fetch(:recipe_name)}",  value: 1
                 menu.choice name: "Rating: #{@formated_recipe.fetch(:rating)}/5", value: 2
                 menu.choice name: "Cooking time: #{@formated_recipe.fetch(:cooking_time)}",  value: 3
@@ -465,7 +474,7 @@ class Recipe
         elsif input == 4
             last_steps = @formated_recipe.fetch(:recipe)
 
-            input = @prompt.select("Which step would you like to edit?\n") do |menu|
+            input = @prompt.select("Which step would you like to edit?\n".colorize(:cyan)) do |menu|
                 last_steps.each_pair do |key, value| 
                     menu.choice "#{key} #{value}", key
                 end
