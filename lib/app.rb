@@ -1,7 +1,6 @@
 require 'yaml'
 require 'tty-prompt'
-
-
+gets
 class Recipe
 
     attr_accessor :entree, :main, :dessert, :all_recipes, :user_rating,
