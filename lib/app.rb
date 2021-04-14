@@ -87,12 +87,12 @@ class Recipe
 
     def load_accounts
         @all_accounts = {}
-        YAML.load_stream(File.read('users/users.yml')){|doc| @all_accounts.merge!(doc)}
+        YAML.load_stream(File.read('lib/users/users.yml')){|doc| @all_accounts.merge!(doc)}
     end
 
     def write_new_user
         @user = {@username => @password}
-        File.open("users/users.yml", "a") { |file| file.write(@user.to_yaml) }
+        File.open("lib/users/users.yml", "a") { |file| file.write(@user.to_yaml) }
     end
 
     def write_user_recipes
@@ -106,15 +106,15 @@ class Recipe
         else
             food_type = [food_type]
         end
-        food_type.each{|course|File.open("food_recipes/user_recipes/#{@username}_#{course}.yml", "w")}
+        food_type.each{|course|File.open("lib/food_recipes/user_recipes/#{@username}_#{course}.yml", "w")}
     end
 
     def populate_user_recipes
         temp_hash = {}
 
         @food_catergories.each {|food_catergorie|
-            YAML.load_stream(File.read("food_recipes/#{food_catergorie}.yml")){|doc| temp_hash.merge!(doc)}
-            File.open("food_recipes/user_recipes/#{@username}_#{food_catergorie}.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
+            YAML.load_stream(File.read("lib/food_recipes/#{food_catergorie}.yml")){|doc| temp_hash.merge!(doc)}
+            File.open("lib/food_recipes/user_recipes/#{@username}_#{food_catergorie}.yml", "w"){ |file| file.write(temp_hash.to_yaml) }
             temp_hash.clear
         }
     end
@@ -308,7 +308,7 @@ class Recipe
                 else
                     recipe_values = @all_recipes.fetch(option)
                     staged_recipe = {option => recipe_values}
-                    File.open("food_recipes/staged_recipes/staging.yml", "a") { |file| file.write(staged_recipe.to_yaml) } 
+                    File.open("lib/lib/food_recipes/staged_recipes/staging.yml", "a") { |file| file.write(staged_recipe.to_yaml) } 
                 end
             end
             
@@ -322,7 +322,7 @@ class Recipe
                         @all_recipes.delete(option)
                         @recipe_list = @all_recipes.keys
                     end
-                    File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                    File.open("lib/lib/food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
                 
                 else
                     load_data(@file_read_variable)
@@ -337,7 +337,7 @@ class Recipe
                     else
                         @all_recipes.delete(option)
                         @recipe_list = @all_recipes.keys
-                        File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                        File.open("lib/food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
                     end
                 end
                 
@@ -387,11 +387,11 @@ class Recipe
         clean
         
         def write_to_user_file
-            File.open("food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            File.open("lib/lib/food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
         end
 
         def write_to_default
-            File.open("food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            File.open("lib/lib/food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
         end
 
         if temp == '' || temp == 'stage'
@@ -404,7 +404,7 @@ class Recipe
 
             def file_path(food_type)
                 temp_hash = {@staged_recipe_option => @submited_recipe.fetch(@staged_recipe_option)}
-                File.open("food_recipes/#{food_type}.yml", 'a'){|doc| temp_hash.merge!.to_yaml(doc)} 
+                File.open("lib/food_recipes/#{food_type}.yml", 'a'){|doc| temp_hash.merge!.to_yaml(doc)} 
                 new_deafult = @formated_recipe.fetch(:recipe_name)
             
                 @default_recipes.push(new_deafult)
@@ -497,7 +497,7 @@ class Recipe
     
     def staging_delete
         @submited_recipe.delete(@staged_recipe_option)
-        File.open("food_recipes/staged_recipes/staging.yml", "w") { |file| file.write(@submited_recipe.to_yaml) }
+        File.open("lib/food_recipes/staged_recipes/staging.yml", "w") { |file| file.write(@submited_recipe.to_yaml) }
     end
 
     def load_data(food_group='')
@@ -505,28 +505,28 @@ class Recipe
         temp_hash = {}
         
         if food_group == 'entree'
-            YAML.load_stream(File.read('food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read('lib/food_recipes/entree.yml')){|doc| temp_hash.merge!(doc)}
             if @username != 'admin'
-                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}    
+                YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}    
             end
 
         elsif food_group == 'main'
-            YAML.load_stream(File.read('food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read('lib/food_recipes/main.yml')){|doc| temp_hash.merge!(doc)}
             if @username != 'admin'
-                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+                YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
             end
 
         elsif food_group == 'dessert'
-            YAML.load_stream(File.read('food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read('lib/food_recipes/dessert.yml')){|doc| temp_hash.merge!(doc)}
 
             if @username != 'admin'
-                YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+                YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
             end
 
         elsif food_group == 'all'
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
         end
         
         @all_recipes = temp_hash
@@ -540,37 +540,37 @@ class Recipe
     def update_recipes
         updated_recipe_list = {}
 
-        YAML.load_stream(File.read("food_recipes/entree.yml")){|doc| updated_recipe_list.merge!(doc)}
-        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/entree.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_entree.yml")){|doc| updated_recipe_list.merge!(doc)}
         
         updated_recipe_list.clear
-        YAML.load_stream(File.read("food_recipes/main.yml")){|doc| updated_recipe_list.merge!(doc)}
-        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/main.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_main.yml")){|doc| updated_recipe_list.merge!(doc)}
         
         updated_recipe_list.clear
-        YAML.load_stream(File.read("food_recipes/dessert.yml")){|doc| updated_recipe_list.merge!(doc)}
-        YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/dessert.yml")){|doc| updated_recipe_list.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| updated_recipe_list.merge!(doc)}
     end
 
     def load_stage_data(edit='')
         temp_hash = {}
 
         if edit == "edit"
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
             @user_edit_recipes = temp_hash
         else
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
-            YAML.load_stream(File.read("food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_entree.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_main.yml")){|doc| temp_hash.merge!(doc)}
+            YAML.load_stream(File.read("lib/food_recipes/user_recipes/#{@username}_dessert.yml")){|doc| temp_hash.merge!(doc)}
             @all_recipes = temp_hash
         end
     end
     
     def review_submission
         @submited_recipe = {}
-        YAML.load_stream(File.read("food_recipes/staged_recipes/staging.yml")) {|doc| @submited_recipe.merge!(doc)}
+        YAML.load_stream(File.read("lib/food_recipes/staged_recipes/staging.yml")) {|doc| @submited_recipe.merge!(doc)}
         @staged_names = @submited_recipe.keys
 
         pre_format_data('admin_review')
@@ -599,9 +599,9 @@ class Recipe
         }
 
         if @username == 'admin'
-            File.open("food_recipes/#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) } 
+            File.open("lib/food_recipes/#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) } 
         else
-            File.open("food_recipes/user_recipes/#{@username}_#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) } 
+            File.open("lib/food_recipes/user_recipes/#{@username}_#{catergory}.yml", "a") { |file| file.write(hash_name.to_yaml) } 
         end
     end
 
