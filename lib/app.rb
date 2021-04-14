@@ -308,7 +308,7 @@ class Recipe
                 else
                     recipe_values = @all_recipes.fetch(option)
                     staged_recipe = {option => recipe_values}
-                    File.open("lib/lib/food_recipes/staged_recipes/staging.yml", "a") { |file| file.write(staged_recipe.to_yaml) } 
+                    File.open("lib/food_recipes/staged_recipes/staging.yml", "a") { |file| file.write(staged_recipe.to_yaml) } 
                 end
             end
             
@@ -322,7 +322,7 @@ class Recipe
                         @all_recipes.delete(option)
                         @recipe_list = @all_recipes.keys
                     end
-                    File.open("lib/lib/food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+                    File.open("lib/food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
                 
                 else
                     load_data(@file_read_variable)
@@ -387,11 +387,11 @@ class Recipe
         clean
         
         def write_to_user_file
-            File.open("lib/lib/food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            File.open("lib/food_recipes/user_recipes/#{@username}_#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
         end
 
         def write_to_default
-            File.open("lib/lib/food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
+            File.open("lib/food_recipes/#{@file_read_variable}.yml", "w") { |file| file.write(@all_recipes.to_yaml) }
         end
 
         if temp == '' || temp == 'stage'
