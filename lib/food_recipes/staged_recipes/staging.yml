@@ -4,14 +4,13 @@ You can test this recipe!:
   :rating: 4.0
   :cooking_time: too long
   :recipe:
-    "Step 1: ": Place holder texttssss
-    "Step 2: ": Im too lazy, its getting late
-Pancake:
-  :recipe_name: Pancake
-  :rating: 5.0
-  :cooking_time: "10"
+    'Step 1: ': Place holder texttssss
+    'Step 2: ': Im too lazy, its getting late
+---
+Pineapple frita:
+  :recipe_name: Pineapple frita
+  :rating: 4.0
+  :cooking_time: 45min
   :recipe:
-    "Step 1: ": Add water too bottle
-    "Step 2: ": Shake that bottle baby!
-    "Step 3: ": Poor on that hot stove
-    "Step 4: ": Forget to put pan on stove and cry
+    'Step 1: ': get a pineapple
+    'Step 2: ': etc

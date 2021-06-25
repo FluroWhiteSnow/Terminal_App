@@ -1,43 +1,4 @@
 ---
-Apple Pie:
-  :recipe_name: Apple Pie
-  :rating: 5.0
-  :cooking_time: 1 hour
-  :recipe:
-    'Step 1: ': Pre-heat oven to 180 degrees
-    'Step 2: ': Remove from box
-    'Step 3: ': Place in oven
-    'Step 4: ': Cook for 50 mins
-    'Step 5: ': Cool for 10 mins then eat!
-DougNut:
-  :recipe_name: DougNut
-  :rating: 5.0
-  :cooking_time: 2 hours
-  :recipe:
-    'Step 1: ': Make the batter with flour and sugar
-    'Step 2: ': Mix with water (eyeball it!)
-    'Step 3: ': Make glue
-    'Step 4: ': Cry
-Creme Brulee:
-  :recipe_name: Creme Brulee
-  :rating: 5.0
-  :cooking_time: 55 mins
-  :recipe:
-    'Step 1: ': Heat oven to 180
-    'Step 2: ': Mix cream and sugar in a bowl
-    'Step 3: ': Add a few eggs
-    'Step 4: ': Place in oven for 40 mins
-    'Step 5: ': Take out of oven
-    'Step 6: ': Blow torch the top to make it crusty brown
-Chocolate Ice-Cream:
-  :recipe_name: Chocolate Ice-Cream
-  :rating: 5.0
-  :cooking_time: 1 hours
-  :recipe:
-    'Step 1: ': Find a brown cow
-    'Step 2: ': Milk the chocolate
-    'Step 3: ': Keep chocolate milk cold while stiring
-    'Step 4: ': Stir untill ice-creamy
 Strawberry Strudle:
   :recipe_name: Strawberry Strudle
   :rating: 4.0
@@ -47,3 +8,19 @@ Strawberry Strudle:
     'Step 2: ': chop the strawberrys
     'Step 3: ': add lots of sugar
     'Step 4: ': Bake it for 1 hour
+Pineapple frita:
+  :recipe_name: Pineapple frita
+  :rating: 4.0
+  :cooking_time: 45min
+  :recipe:
+    'Step 1: ': get a pineapple
+    'Step 2: ': etc
+---
+testing:
+  :recipe_name: testing
+  :rating: 5.0
+  :cooking_time: '45'
+  :recipe:
+    'Step 1: ': adf
+    'Step 2: ': asdf
+    'Step 3: ': blah
